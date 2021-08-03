@@ -1,3 +1,5 @@
+import 'package:chatapp/screens/login.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -9,14 +11,14 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenWidget extends State<WelcomeScreen> {
   int _pageCount = 4;
   final PageController _welcomeScreenController =
-      PageController(initialPage: 0);
+      PageController(initialPage: 0, viewportFraction: 1);
   int _currentPage = 0;
 
   @override
   Widget build(BuildContext context) {
     Widget _indicator(bool isCurrent) {
       return AnimatedContainer(
-        duration: Duration(milliseconds: 150),
+        duration: Duration(milliseconds: 350),
         margin: EdgeInsets.symmetric(horizontal: 4, vertical: 10),
         height: 8,
         width: isCurrent ? 17 : 13,
@@ -25,6 +27,11 @@ class _WelcomeScreenWidget extends State<WelcomeScreen> {
           borderRadius: BorderRadius.circular(20),
         ),
       );
+    }
+
+    void _signInPage() {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
     }
 
     List<Widget> _buildPageIndicator() {
@@ -63,7 +70,12 @@ class _WelcomeScreenWidget extends State<WelcomeScreen> {
                     ? Container(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                          onPressed: () => print("Skip"),
+                          onPressed: () {
+                            _welcomeScreenController.animateToPage(
+                                _pageCount - 1,
+                                duration: Duration(microseconds: 200),
+                                curve: Curves.ease);
+                          },
                           child: Text(
                             "Skip",
                             style: TextStyle(
@@ -79,7 +91,7 @@ class _WelcomeScreenWidget extends State<WelcomeScreen> {
                         child: TextButton(
                           onPressed: () => print("Home"),
                           child: Text(
-                            "",
+                            "Visit site",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,
@@ -252,7 +264,7 @@ class _WelcomeScreenWidget extends State<WelcomeScreen> {
                                   color: Colors.grey,
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: null,
                             )
                           : TextButton(
                               child: Text(
@@ -262,7 +274,12 @@ class _WelcomeScreenWidget extends State<WelcomeScreen> {
                                   color: Colors.white,
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                _welcomeScreenController.animateToPage(
+                                    _currentPage - 1,
+                                    duration: Duration(milliseconds: 200),
+                                    curve: Curves.ease);
+                              },
                             ),
                       Expanded(
                         child: Row(
@@ -279,7 +296,7 @@ class _WelcomeScreenWidget extends State<WelcomeScreen> {
                                   color: Colors.white,
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: _signInPage,
                             )
                           : TextButton(
                               child: Text(
@@ -289,7 +306,12 @@ class _WelcomeScreenWidget extends State<WelcomeScreen> {
                                   color: Colors.white,
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                _welcomeScreenController.animateToPage(
+                                    _currentPage + 1,
+                                    duration: Duration(milliseconds: 200),
+                                    curve: Curves.ease);
+                              },
                             ),
                     ],
                   ),
