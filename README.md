@@ -1,16 +1,23 @@
 # chatapp
 
-A new Flutter project.
+A flutter chatapp frontend.
 
-## Getting Started
+## Requirements
+> Flutter installed.  
+> Android studio installed for working on android.  
+> Xcode installed for working on ios and mac.  
+> Flutter doctor all satisfied.  
 
-This project is a starting point for a Flutter application.
+## Instalation & development
+The installation is same as all flutter projects. Steps below:  
+> Clone the project either with command line or just download the zip and extract it.  
+> Open a command line window and cd into the project.  
+> Run pub get to install dependencies `$ flutter pub get`.  
+> Launch your emulator or plug in your device with usb debugging enabled.  
+> Run the app in debug mode with `$ flutter run`.  
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Production build
+Make sure you followed the steps on **installation & development**.  
+> Open a terminal window and cd into the project folder if you haven't done already.  
+> Run flutters build command to build in your preferred platform `$ flutter build apk` replace `apk` with your platrform.  
+> When its done it will show the output directory you can find it on that directory (default is: <project_dir>/build/app/outputs/<your platform>/release/.  
