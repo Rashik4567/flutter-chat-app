@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:chatapp/screens/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +18,12 @@ class _WelcomeScreenWidget extends State<WelcomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final _screenSize = MediaQuery.of(context).size.width;
+    final _screenSizeHeight = MediaQuery.of(context).size.height;
+
+    double? _titleFontSize = _screenSizeHeight > 700 ? 30.0 : 20.0;
+    double? _textFontSize = _screenSizeHeight > 700 ? 21.0 : 17.0;
+
     Widget _indicator(bool isCurrent) {
       return AnimatedContainer(
         duration: Duration(milliseconds: 350),
@@ -66,254 +74,264 @@ class _WelcomeScreenWidget extends State<WelcomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _currentPage != _pageCount - 1
-                    ? Container(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () {
-                            _welcomeScreenController.animateToPage(
-                                _pageCount - 1,
-                                duration: Duration(microseconds: 200),
-                                curve: Curves.ease);
-                          },
-                          child: Text(
-                            "Skip",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
+                Flexible(
+                  flex: 1,
+                  child: _currentPage != _pageCount - 1
+                      ? Container(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {
+                              _welcomeScreenController.animateToPage(
+                                  _pageCount - 1,
+                                  duration: Duration(microseconds: 200),
+                                  curve: Curves.ease);
+                            },
+                            child: Text(
+                              "Skip",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () => print("Home"),
+                            child: Text(
+                              "Visit site",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ),
-                      )
-                    : Container(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () => print("Home"),
-                          child: Text(
-                            "Visit site",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
+                ),
+                Expanded(
+                  flex: 10,
+                  child: Container(
+                    // height: 600.00,
+                    child: PageView(
+                      physics: ClampingScrollPhysics(),
+                      controller: _welcomeScreenController,
+                      onPageChanged: (int page) {
+                        setState(() {
+                          _currentPage = page;
+                        });
+                      },
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Image(
+                              height: _screenSizeHeight * (2 / 5),
+                              image: AssetImage("assets/images/welcome.png"),
+                              repeat: ImageRepeat.noRepeat,
                             ),
-                          ),
+                            Text(
+                              "Welcome to chatapp",
+                              style: TextStyle(
+                                fontSize: _titleFontSize,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Container(
+                              padding:
+                                  EdgeInsets.only(top: 30, right: 20, left: 20),
+                              width: _screenSize,
+                              alignment: Alignment.center,
+                              child: Center(
+                                child: Text(
+                                  "Stay connected with your friends and family no matter where you are.",
+                                  style: TextStyle(
+                                    fontSize: _textFontSize,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                Container(
-                  height: 600.00,
-                  child: PageView(
-                    physics: ClampingScrollPhysics(),
-                    controller: _welcomeScreenController,
-                    onPageChanged: (int page) {
-                      setState(() {
-                        _currentPage = page;
-                      });
-                    },
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image(
-                            image: AssetImage("assets/images/welcome.png"),
-                            repeat: ImageRepeat.noRepeat,
-                          ),
-                          Text(
-                            "Welcome to chatapp",
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Contact with your friends like they are near you.",
+                              style: TextStyle(
+                                fontSize: _titleFontSize,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                          ),
-                          Container(
-                            padding:
-                                EdgeInsets.only(top: 40, right: 20, left: 20),
-                            width: 500,
-                            alignment: Alignment.center,
-                            child: Center(
-                              child: Text(
-                                "Stay connected with your friends and family no matter where you are.",
-                                style: TextStyle(
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white,
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 40,
+                              ),
+                              width: 500,
+                              alignment: Alignment.center,
+                              child: Center(
+                                child: Text(
+                                  "Experience the high quality chat features and video and audio calls.",
+                                  style: TextStyle(
+                                    fontSize: _textFontSize,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Contact with your friends like they are near you.",
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "No lag video and audio calls even in slower connections.",
+                              style: TextStyle(
+                                fontSize: _titleFontSize,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 40,
-                            ),
-                            width: 500,
-                            alignment: Alignment.center,
-                            child: Center(
-                              child: Text(
-                                "Experience the high quality chat features and video and audio calls.",
-                                style: TextStyle(
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white,
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 40,
+                              ),
+                              width: 500,
+                              alignment: Alignment.center,
+                              child: Center(
+                                child: Text(
+                                  "Leave your experience to our super optimized algorithoms and servers. Just enjoy the moment.",
+                                  style: TextStyle(
+                                    fontSize: _textFontSize,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "No lag video and audio calls even in slower connections.",
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Lets get started.",
+                              style: TextStyle(
+                                fontSize: _titleFontSize,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 40,
-                            ),
-                            width: 500,
-                            alignment: Alignment.center,
-                            child: Center(
-                              child: Text(
-                                "Leave your experience to our super optimized algorithoms and servers. Just enjoy the moment.",
-                                style: TextStyle(
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white,
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 40,
+                              ),
+                              width: 500,
+                              alignment: Alignment.center,
+                              child: Center(
+                                child: Text(
+                                  "Please log in to get started.",
+                                  style: TextStyle(
+                                    fontSize: _textFontSize,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Lets get started.",
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 40,
-                            ),
-                            width: 500,
-                            alignment: Alignment.center,
-                            child: Center(
-                              child: Text(
-                                "Please log in to get started.",
-                                style: TextStyle(
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.white,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _currentPage == 0
-                          ? TextButton(
-                              child: Text(
-                                "back",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.grey,
+                Flexible(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _currentPage == 0
+                            ? TextButton(
+                                child: Text(
+                                  "back",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.grey,
+                                  ),
                                 ),
-                              ),
-                              onPressed: null,
-                            )
-                          : TextButton(
-                              child: Text(
-                                "back",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
+                                onPressed: null,
+                              )
+                            : TextButton(
+                                child: Text(
+                                  "back",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                  ),
                                 ),
+                                onPressed: () {
+                                  _welcomeScreenController.animateToPage(
+                                      _currentPage - 1,
+                                      duration: Duration(milliseconds: 200),
+                                      curve: Curves.ease);
+                                },
                               ),
-                              onPressed: () {
-                                _welcomeScreenController.animateToPage(
-                                    _currentPage - 1,
-                                    duration: Duration(milliseconds: 200),
-                                    curve: Curves.ease);
-                              },
-                            ),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: _buildPageIndicator(),
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: _buildPageIndicator(),
+                          ),
                         ),
-                      ),
-                      _currentPage == _pageCount - 1
-                          ? TextButton(
-                              child: Text(
-                                "Sign in",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
+                        _currentPage == _pageCount - 1
+                            ? TextButton(
+                                child: Text(
+                                  "Sign in",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                              onPressed: _signInPage,
-                            )
-                          : TextButton(
-                              child: Text(
-                                "Next",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
+                                onPressed: _signInPage,
+                              )
+                            : TextButton(
+                                child: Text(
+                                  "Next",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                  ),
                                 ),
+                                onPressed: () {
+                                  _welcomeScreenController.animateToPage(
+                                      _currentPage + 1,
+                                      duration: Duration(milliseconds: 200),
+                                      curve: Curves.ease);
+                                },
                               ),
-                              onPressed: () {
-                                _welcomeScreenController.animateToPage(
-                                    _currentPage + 1,
-                                    duration: Duration(milliseconds: 200),
-                                    curve: Curves.ease);
-                              },
-                            ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ],

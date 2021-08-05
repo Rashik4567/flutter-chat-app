@@ -1,20 +1,21 @@
-import 'package:chatapp/screens/signup.dart';
+import 'package:chatapp/screens/login.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flash/flash.dart';
 import 'home.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class SignupScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _LoginScreenState();
+  State<StatefulWidget> createState() => SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class SignupScreenState extends State<SignupScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final _loginFormKey = GlobalKey<FormState>();
+  final _signupFormKey = GlobalKey<FormState>();
   String? _email;
   String? _password;
+  String? _username;
+  String? _password2;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Container(
                   width: _displayWidth,
                   child: Text(
-                    "Logging in...",
+                    "Creating...",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -51,11 +52,13 @@ class _LoginScreenState extends State<LoginScreen> {
           });
     }
 
-    void _handleLogin() {
+    void _handleSignup() {
       displayFlash();
       String? email = _email;
       String? password = _password;
-      print("Logging in with email: $email, password: $password");
+      String? username = _username;
+      String? password2 = _password2;
+      print("Sign up with email: $email, password: $password");
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => HomePage()));
     }
@@ -113,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         Center(
                           child: Text(
-                            "Sign in to your account",
+                            "Create an account",
                             style: TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
@@ -124,11 +127,39 @@ class _LoginScreenState extends State<LoginScreen> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 40),
                           child: Form(
-                            key: _loginFormKey,
+                            key: _signupFormKey,
                             child: Column(
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(top: 15),
+                                  child: TextFormField(
+                                    onChanged: (value) {
+                                      this.setState(() {
+                                        _username = value;
+                                      });
+                                    },
+                                    cursorColor: Colors.black,
+                                    expands: false,
+                                    // textAlign: TextAlign.center,
+                                    decoration: InputDecoration(
+                                      border: null,
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                      // prefixText: "Username:",
+                                      hintText: "Username",
+                                    ),
+                                    validator: (value) {
+                                      if (value == null ||
+                                          value.isEmpty ||
+                                          value.length < 5) {
+                                        return 'Invalid username.';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8),
                                   child: TextFormField(
                                     onChanged: (value) {
                                       this.setState(() {
@@ -156,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 10.0),
+                                  padding: const EdgeInsets.only(top: 8),
                                   child: TextFormField(
                                     onChanged: (value) {
                                       this.setState(() {
@@ -185,10 +216,38 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                                 Padding(
+                                  padding: const EdgeInsets.only(top: 8),
+                                  child: TextFormField(
+                                    onChanged: (value) {
+                                      this.setState(() {
+                                        _password2 = value;
+                                      });
+                                    },
+                                    cursorColor: Colors.black,
+                                    expands: false,
+                                    // textAlign: TextAlign.center,
+                                    decoration: InputDecoration(
+                                      border: null,
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                      // prefixText: "Username:",
+                                      hintText: "Password (re-type)",
+                                    ),
+                                    validator: (value) {
+                                      if (value != _password) {
+                                        print(
+                                            "Password: $_password, value: $value");
+                                        return 'Password did not matched.';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                                Padding(
                                   padding: EdgeInsets.only(top: 10),
                                   child: TextButton(
                                     child: Text(
-                                      "Submit",
+                                      "Create",
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 24,
@@ -196,9 +255,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                     ),
                                     onPressed: () {
-                                      if (_loginFormKey.currentState!
+                                      if (_signupFormKey.currentState!
                                           .validate()) {
-                                        _handleLogin();
+                                        _handleSignup();
                                       }
                                     },
                                   ),
@@ -215,7 +274,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   flex: 1,
                   child: TextButton(
                     child: Text(
-                      "Or sign up instead",
+                      "Or sign in instead",
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.white,
@@ -225,7 +284,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SignupScreen()));
+                              builder: (context) => LoginScreen()));
                     },
                   ),
                 ),
