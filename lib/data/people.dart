@@ -13,3 +13,11 @@ List<People> active = [
   People(name: "Alex"),
   People(name: "Glinda"),
 ];
+
+List<People> friends = [
+  People(name: "Rashik"),
+  People(name: "Alex"),
+  People(name: "Hope"),
+  People(name: "Anthony"),
+  People(name: "Glinda"),
+];

@@ -1,11 +1,16 @@
 import 'package:chatapp/screens/signup.dart';
+import 'package:chatapp/services/auth.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flash/flash.dart';
 import 'home.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  final Function screenChangeHandler;
+
+  const LoginScreen({Key? key, required this.screenChangeHandler})
+      : super(key: key);
   @override
   State<StatefulWidget> createState() => _LoginScreenState();
 }
@@ -13,16 +18,17 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _loginFormKey = GlobalKey<FormState>();
-  String? _email;
-  String? _password;
+  String _email = '';
+  String _password = '';
+  final AuthService _loginAuth = AuthService();
 
   @override
   Widget build(BuildContext context) {
     final _displayWidth = MediaQuery.of(context).size.width;
 
-    void displayFlash() {
+    void displayFlash(msg) {
       showFlash(
-          duration: Duration(seconds: 3),
+          duration: Duration(seconds: 5),
           context: context,
           builder: (context, controller) {
             return Flash(
@@ -32,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Container(
                   width: _displayWidth,
                   child: Text(
-                    "Logging in...",
+                    msg,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -51,13 +57,21 @@ class _LoginScreenState extends State<LoginScreen> {
           });
     }
 
-    void _handleLogin() {
-      displayFlash();
-      String? email = _email;
-      String? password = _password;
-      print("Logging in with email: $email, password: $password");
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
+    void _handleLogin() async {
+      // displayFlash("Logging in...");
+      String email = _email;
+      String password = _password;
+      dynamic result =
+          await _loginAuth.loginWithEmailAndPassword(email, password);
+      if (result == "invalid email") {
+        displayFlash("Invalid email.");
+      } else if (result == "user not found") {
+        displayFlash("User not found.");
+      } else if (result == "wrong password") {
+        displayFlash("Password did not matched.");
+      } else {
+        displayFlash("Logged in.");
+      }
     }
 
     return MaterialApp(
@@ -92,13 +106,22 @@ class _LoginScreenState extends State<LoginScreen> {
                             EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         child: TextButton(
                           child: Text(
-                            "Visit site",
+                            "Sign in as guest",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () async {
+                            dynamic _result =
+                                await _loginAuth.signInAnonymous();
+                            if (_result == null) {
+                              print("Error signing in.");
+                            } else {
+                              print("User signed in.");
+                              print(_result.uid);
+                            }
+                          },
                         ),
                       )
                     ],
@@ -222,10 +245,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SignupScreen()));
+                      widget.screenChangeHandler();
                     },
                   ),
                 ),

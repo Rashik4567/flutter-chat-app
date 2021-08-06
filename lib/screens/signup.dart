@@ -1,10 +1,15 @@
 import 'package:chatapp/screens/login.dart';
+import 'package:chatapp/services/auth.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flash/flash.dart';
 import 'home.dart';
 
 class SignupScreen extends StatefulWidget {
+  final Function screenChangeHandler;
+
+  SignupScreen({required this.screenChangeHandler});
+
   @override
   State<StatefulWidget> createState() => SignupScreenState();
 }
@@ -12,18 +17,19 @@ class SignupScreen extends StatefulWidget {
 class SignupScreenState extends State<SignupScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _signupFormKey = GlobalKey<FormState>();
-  String? _email;
-  String? _password;
-  String? _username;
-  String? _password2;
+  String _email = '';
+  String _password = '';
+  String _password2 = '';
+
+  final AuthService _auth = AuthService();
 
   @override
   Widget build(BuildContext context) {
     final _displayWidth = MediaQuery.of(context).size.width;
 
-    void displayFlash() {
+    void displayFlash(String msg) {
       showFlash(
-          duration: Duration(seconds: 3),
+          duration: Duration(seconds: 5),
           context: context,
           builder: (context, controller) {
             return Flash(
@@ -33,7 +39,7 @@ class SignupScreenState extends State<SignupScreen> {
                 child: Container(
                   width: _displayWidth,
                   child: Text(
-                    "Creating...",
+                    msg,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -52,15 +58,22 @@ class SignupScreenState extends State<SignupScreen> {
           });
     }
 
-    void _handleSignup() {
-      displayFlash();
-      String? email = _email;
-      String? password = _password;
-      String? username = _username;
-      String? password2 = _password2;
-      print("Sign up with email: $email, password: $password");
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
+    void _handleSignup() async {
+      displayFlash("Creating user...");
+      String email = _email;
+      String password = _password;
+
+      dynamic result =
+          await _auth.registerWithEmailAndPassword(email, password);
+      if (result == 'email in use') {
+        displayFlash("Email already existed.");
+      } else if (result == 'invalid email') {
+        displayFlash("Email is invalid.");
+      } else if (result == 'weak password') {
+        displayFlash("Password is too weak");
+      } else {
+        displayFlash("Account created.");
+      }
     }
 
     return MaterialApp(
@@ -95,13 +108,21 @@ class SignupScreenState extends State<SignupScreen> {
                             EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                         child: TextButton(
                           child: Text(
-                            "Visit site",
+                            "Sign in as guest",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 20,
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () async {
+                            dynamic _result = await _auth.signInAnonymous();
+                            if (_result == null) {
+                              print("Error signing in.");
+                            } else {
+                              print("User signed in.");
+                              print(_result.uid);
+                            }
+                          },
                         ),
                       )
                     ],
@@ -130,34 +151,6 @@ class SignupScreenState extends State<SignupScreen> {
                             key: _signupFormKey,
                             child: Column(
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 15),
-                                  child: TextFormField(
-                                    onChanged: (value) {
-                                      this.setState(() {
-                                        _username = value;
-                                      });
-                                    },
-                                    cursorColor: Colors.black,
-                                    expands: false,
-                                    // textAlign: TextAlign.center,
-                                    decoration: InputDecoration(
-                                      border: null,
-                                      fillColor: Colors.white,
-                                      filled: true,
-                                      // prefixText: "Username:",
-                                      hintText: "Username",
-                                    ),
-                                    validator: (value) {
-                                      if (value == null ||
-                                          value.isEmpty ||
-                                          value.length < 5) {
-                                        return 'Invalid username.';
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 8),
                                   child: TextFormField(
@@ -218,6 +211,7 @@ class SignupScreenState extends State<SignupScreen> {
                                 Padding(
                                   padding: const EdgeInsets.only(top: 8),
                                   child: TextFormField(
+                                    obscureText: true,
                                     onChanged: (value) {
                                       this.setState(() {
                                         _password2 = value;
@@ -281,10 +275,7 @@ class SignupScreenState extends State<SignupScreen> {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginScreen()));
+                      widget.screenChangeHandler();
                     },
                   ),
                 ),

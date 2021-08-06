@@ -1,18 +1,24 @@
-import 'dart:ffi';
-
+import 'package:chatapp/controller.dart';
+import 'package:chatapp/data/user.dart';
 import 'package:chatapp/screens/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class WelcomeScreen extends StatefulWidget {
+  final Function welcomeScreenController;
+
+  WelcomeScreen({
+    required this.welcomeScreenController,
+  });
   @override
   State<WelcomeScreen> createState() => _WelcomeScreenWidget();
 }
 
 class _WelcomeScreenWidget extends State<WelcomeScreen> {
   int _pageCount = 4;
-  final PageController _welcomeScreenController =
+  final PageController _screenStageController =
       PageController(initialPage: 0, viewportFraction: 1);
   int _currentPage = 0;
 
@@ -38,8 +44,9 @@ class _WelcomeScreenWidget extends State<WelcomeScreen> {
     }
 
     void _signInPage() {
+      widget.welcomeScreenController();
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginScreen()));
+          context, MaterialPageRoute(builder: (context) => Controller()));
     }
 
     List<Widget> _buildPageIndicator() {
@@ -81,7 +88,7 @@ class _WelcomeScreenWidget extends State<WelcomeScreen> {
                           alignment: Alignment.centerRight,
                           child: TextButton(
                             onPressed: () {
-                              _welcomeScreenController.animateToPage(
+                              _screenStageController.animateToPage(
                                   _pageCount - 1,
                                   duration: Duration(microseconds: 200),
                                   curve: Curves.ease);
@@ -117,7 +124,7 @@ class _WelcomeScreenWidget extends State<WelcomeScreen> {
                     // height: 600.00,
                     child: PageView(
                       physics: ClampingScrollPhysics(),
-                      controller: _welcomeScreenController,
+                      controller: _screenStageController,
                       onPageChanged: (int page) {
                         setState(() {
                           _currentPage = page;
@@ -292,7 +299,7 @@ class _WelcomeScreenWidget extends State<WelcomeScreen> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  _welcomeScreenController.animateToPage(
+                                  _screenStageController.animateToPage(
                                       _currentPage - 1,
                                       duration: Duration(milliseconds: 200),
                                       curve: Curves.ease);
@@ -324,7 +331,7 @@ class _WelcomeScreenWidget extends State<WelcomeScreen> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  _welcomeScreenController.animateToPage(
+                                  _screenStageController.animateToPage(
                                       _currentPage + 1,
                                       duration: Duration(milliseconds: 200),
                                       curve: Curves.ease);

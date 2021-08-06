@@ -1,3 +1,4 @@
+import 'package:chatapp/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chatapp/data/people.dart';
 import 'package:flutter/rendering.dart';
@@ -8,6 +9,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final AuthService _auth = AuthService();
+
   @override
   Widget build(BuildContext context) {
     final _screenWidth = MediaQuery.of(context).size.width;
@@ -26,6 +29,12 @@ class _HomePageState extends State<HomePage> {
                 print("search");
               },
             ),
+            IconButton(
+              onPressed: () async {
+                await _auth.SignOut();
+              },
+              icon: Icon(Icons.logout),
+            ),
           ],
         ),
         body: Container(
@@ -35,25 +44,89 @@ class _HomePageState extends State<HomePage> {
             children: [
               Container(
                 width: _screenWidth,
-                height: 100,
+                height: 120,
                 decoration: BoxDecoration(
                     color: Colors.blue,
                     border: null,
                     borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(12),
                         bottomRight: Radius.circular(12))),
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemCount: active.length,
-                  itemBuilder: (context, index) {
-                    return CircleAvatar(
-                      backgroundColor: Colors.purple,
-                      radius: 30,
-                      child: Icon(Icons.search),
-                    );
-                  },
+                child: Column(
+                  children: [
+                    Text(
+                      "Active",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        itemCount: active.length + 1,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: index == 0
+                                ? Padding(
+                                    padding: const EdgeInsets.only(left: 8),
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.purple,
+                                      radius: 30,
+                                      child: IconButton(
+                                        icon: Icon(Icons.search),
+                                        onPressed: () {},
+                                      ),
+                                    ),
+                                  )
+                                : CircleAvatar(
+                                    backgroundColor: Colors.purple,
+                                    radius: 30,
+                                    child: Icon(Icons.person),
+                                  ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 10, left: 2, right: 2, bottom: 2),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "All chats",
+                            style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: friends.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: FriendsBuilder(friends[index]),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -62,4 +135,54 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+Row FriendsBuilder(friend) {
+  return Row(
+    children: [
+      Flexible(
+        flex: 2,
+        child: CircleAvatar(
+          child: IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              print("Profile");
+            },
+          ),
+          radius: 30,
+        ),
+      ),
+      Expanded(
+        flex: 8,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: TextButton(
+            child: Text(
+              friend.name,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                color: Colors.white,
+              ),
+            ),
+            onPressed: () {
+              print(friend.name);
+            },
+          ),
+        ),
+      ),
+      Flexible(
+        flex: 2,
+        child: IconButton(
+          onPressed: () {
+            print("Settings");
+          },
+          icon: Icon(
+            Icons.settings,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    ],
+  );
 }
