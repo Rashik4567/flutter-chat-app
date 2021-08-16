@@ -1,10 +1,7 @@
-import 'package:chatapp/screens/signup.dart';
 import 'package:chatapp/services/auth.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flash/flash.dart';
-import 'home.dart';
 
 class LoginScreen extends StatefulWidget {
   final Function screenChangeHandler;

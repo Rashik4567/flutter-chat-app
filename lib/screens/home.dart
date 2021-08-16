@@ -1,3 +1,4 @@
+import 'package:chatapp/screens/search.dart';
 import 'package:chatapp/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:chatapp/data/people.dart';
@@ -26,7 +27,8 @@ class _HomePageState extends State<HomePage> {
             IconButton(
               icon: Icon(Icons.search_outlined),
               onPressed: () {
-                print("search");
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SearchScreen()));
               },
             ),
             IconButton(

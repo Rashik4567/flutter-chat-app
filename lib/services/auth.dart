@@ -1,4 +1,5 @@
 import 'package:chatapp/data/user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -54,12 +55,23 @@ class AuthService {
     }
   }
 
+  // Upload user information to cloud firestore
+  void uploadUserInfo(String username, String email) {
+    Map<String, String> data = {
+      'username': username,
+      'email': email,
+    };
+    FirebaseFirestore.instance.collection('users').add(data);
+  }
+
   // Register with email and password
-  Future registerWithEmailAndPassword(String email, String password) async {
+  Future registerWithEmailAndPassword(
+      String email, String password, String username) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       User? user = result.user;
+      uploadUserInfo(username, email);
       return _userFromFirebase(user);
     } on FirebaseAuthException catch (e) {
       if (e.code == "email-already-in-use") {

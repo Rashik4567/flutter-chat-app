@@ -20,6 +20,7 @@ class SignupScreenState extends State<SignupScreen> {
   String _email = '';
   String _password = '';
   String _password2 = '';
+  String _username = '';
 
   final AuthService _auth = AuthService();
 
@@ -62,9 +63,10 @@ class SignupScreenState extends State<SignupScreen> {
       displayFlash("Creating user...");
       String email = _email;
       String password = _password;
+      String username = _username;
 
       dynamic result =
-          await _auth.registerWithEmailAndPassword(email, password);
+          await _auth.registerWithEmailAndPassword(email, password, username);
       if (result == 'email in use') {
         displayFlash("Email already existed.");
       } else if (result == 'invalid email') {
@@ -151,6 +153,32 @@ class SignupScreenState extends State<SignupScreen> {
                             key: _signupFormKey,
                             child: Column(
                               children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8),
+                                  child: TextFormField(
+                                    onChanged: (value) {
+                                      this.setState(() {
+                                        _username = value;
+                                      });
+                                    },
+                                    cursorColor: Colors.black,
+                                    expands: false,
+                                    // textAlign: TextAlign.center,
+                                    decoration: InputDecoration(
+                                      border: null,
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                      // prefixText: "Username:",
+                                      hintText: "Username",
+                                    ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Invalid username.';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
                                 Padding(
                                   padding: const EdgeInsets.only(top: 8),
                                   child: TextFormField(
