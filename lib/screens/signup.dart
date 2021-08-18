@@ -28,7 +28,7 @@ class SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     final _displayWidth = MediaQuery.of(context).size.width;
 
-    void displayFlash(String msg) {
+    void displayFlash(String msg, context) {
       showFlash(
           duration: Duration(seconds: 5),
           context: context,
@@ -60,7 +60,7 @@ class SignupScreenState extends State<SignupScreen> {
     }
 
     void _handleSignup() async {
-      displayFlash("Creating user...");
+      displayFlash("Creating user...", _scaffoldKey.currentContext);
       String email = _email;
       String password = _password;
       String username = _username;
@@ -68,13 +68,13 @@ class SignupScreenState extends State<SignupScreen> {
       dynamic result =
           await _auth.registerWithEmailAndPassword(email, password, username);
       if (result == 'email in use') {
-        displayFlash("Email already existed.");
+        displayFlash("Email already existed.", _scaffoldKey.currentContext);
       } else if (result == 'invalid email') {
-        displayFlash("Email is invalid.");
+        displayFlash("Email is invalid.", _scaffoldKey.currentContext);
       } else if (result == 'weak password') {
-        displayFlash("Password is too weak");
+        displayFlash("Password is too weak", _scaffoldKey.currentContext);
       } else {
-        displayFlash("Account created.");
+        displayFlash("Account created.", _scaffoldKey.currentContext);
       }
     }
 

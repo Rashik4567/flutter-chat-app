@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final _displayWidth = MediaQuery.of(context).size.width;
 
-    void displayFlash(msg) {
+    void displayFlash(msg, context) {
       showFlash(
           duration: Duration(seconds: 5),
           context: context,
@@ -61,13 +61,13 @@ class _LoginScreenState extends State<LoginScreen> {
       dynamic result =
           await _loginAuth.loginWithEmailAndPassword(email, password);
       if (result == "invalid email") {
-        displayFlash("Invalid email.");
+        displayFlash("Invalid email.", _scaffoldKey.currentContext);
       } else if (result == "user not found") {
-        displayFlash("User not found.");
+        displayFlash("User not found.", _scaffoldKey.currentContext);
       } else if (result == "wrong password") {
-        displayFlash("Password did not matched.");
+        displayFlash("Password did not matched.", _scaffoldKey.currentContext);
       } else {
-        displayFlash("Logged in.");
+        displayFlash("Logged in.", _scaffoldKey.currentContext);
       }
     }
 

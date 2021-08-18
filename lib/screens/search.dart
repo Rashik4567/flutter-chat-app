@@ -23,6 +23,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget getSearchTile() {
+    // print((results!).size);
     return results != null
         ? ListView.builder(
             shrinkWrap: true,
@@ -51,22 +52,31 @@ class _SearchScreenState extends State<SearchScreen> {
           centerTitle: true,
         ),
         body: Center(
-          child: Column(
+          child: ListView(
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: TextField(
-                  onChanged: (value) {
-                    initialSearch();
-                  },
-                  controller: _searchFieldController,
-                  decoration: InputDecoration(
-                    border: null,
-                    fillColor: Colors.white,
-                    filled: true,
-                    // prefixText: "Username:",
-                    hintText: "Username",
-                  ),
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: TextField(
+                        controller: _searchFieldController,
+                        decoration: InputDecoration(
+                          border: null,
+                          fillColor: Colors.transparent,
+                          filled: true,
+                          // prefixText: "Username:",
+                          hintText: "Username",
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.search),
+                      onPressed: () {
+                        initialSearch();
+                      },
+                    ),
+                  ],
                 ),
               ),
               getSearchTile(),
@@ -90,25 +100,39 @@ class SearchTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 3.0),
+      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 3.0),
       child: Row(
         children: [
-          Text(
-            username,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: Colors.black,
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                username,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+              Text(
+                email,
+                style: TextStyle(
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
           ),
-          Text(
-            email,
-            style: TextStyle(
-              fontSize: 15.0,
-              fontWeight: FontWeight.w400,
-              color: Colors.grey,
+          Spacer(),
+          TextButton(
+            onPressed: () {},
+            child: Text("View profile"),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.blue),
+              foregroundColor: MaterialStateProperty.all(Colors.white),
             ),
-          ),
+          )
         ],
       ),
     );
